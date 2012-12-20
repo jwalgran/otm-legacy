@@ -1279,6 +1279,12 @@ class UpdatePlotAndTree(TestCase):
         for audit_trail_record in tree.history.all():
             self.assertFalse(audit_trail_record.present, 'Expected "present" to be False for all audit trail records for tree associated with a deleted plot')
 
+    def test_remove_tree_from_plot_with_no_tree(self):
+        plot = mkPlot(self.user)
+        plot_id = plot.pk
+        response = self.client.delete("%s/plots/%d/tree" % (API_PFX, plot_id), **self.sign)
+        self.assertEqual(400, response.status_code, "Expected 400 Bad Request when plot has no tree.")
+
     def test_get_current_tree(self):
         plot = mkPlot(self.user)
         plot_id = plot.pk
@@ -1290,6 +1296,12 @@ class UpdatePlotAndTree(TestCase):
         response_dict = loads(response.content)
         self.assertTrue('species' in response_dict, 'Expected "species" to be a top level key in the response object')
         self.assertEqual(tree.species.pk, response_dict['species'])
+
+    def test_get_current_tree_from_plot_with_no_tree(self):
+        plot = mkPlot(self.user)
+        plot_id = plot.pk
+        response = self.client.get("%s/plots/%d/tree" % (API_PFX, plot_id), **self.sign)
+        self.assertEqual(400, response.status_code, "Expected 400 Bad Request when plot has no tree.")
 
     def test_registration(self):
         self.assertTrue(User.objects.filter(username='foobar').count() == 0, "The test expects the foobar user to not exists.")

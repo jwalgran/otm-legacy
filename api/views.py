@@ -1456,7 +1456,7 @@ def remove_current_tree_from_plot(request, plot_id):
         else:
             raise PermissionDenied('%s does not have permission to the current tree from plot %s' % (request.user.username, plot_id))
     else:
-        raise HttpResponseBadRequest("Plot %s does not have a current tree" % plot_id)
+        return HttpResponseBadRequest("Plot %s does not have a current tree" % plot_id)
 
 @require_http_methods(["GET"])
 @api_call()
@@ -1468,4 +1468,4 @@ def get_current_tree_from_plot(request, plot_id):
         )
         return plot_dict['tree']
     else:
-        raise HttpResponseBadRequest("Plot %s does not have a current tree" % plot_id)
+        return HttpResponseBadRequest("Plot %s does not have a current tree" % plot_id)
